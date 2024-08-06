@@ -55,6 +55,14 @@ Pushing to a remote repository: git push origin main
 Checking status: git status
 Switching branches: git checkout <branch-name>
 
+## Cloud Deployment
+
+Deployed Node.js app to the cloud by copying our repository out of the github classroom and using the render hosting service
+Link to access:
+https://csce310clouddeploy.onrender.com/
+Public Repository used to give render access:
+https://github.com/Lampsdad/CSCE310CloudDeploy
+
 ## Support
 
-The support of this app has been officially closed. There is nothing more important left to develop. 
+The support of this app has been officially closed. There is nothing more important left to develop.

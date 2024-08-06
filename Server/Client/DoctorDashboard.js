@@ -1,3 +1,4 @@
+// Nikhil handled appointments
 async function viewAppointments() {
     const response = await fetch('/viewAppointments', {
         method: 'GET',
@@ -24,6 +25,7 @@ async function viewAppointments() {
     }
 }
 
+// Dylan Hoang handled bills
 async function createBill(){
     const patientid = document.getElementById('patientId').value;
     const bill = document.getElementById('billAmount').value;
@@ -52,6 +54,7 @@ async function createBill(){
     }
 }
 
+// Dylan Hoang handled bills
 async function deleteBill(){
     const billid = document.getElementById('billId').value;
 
@@ -73,11 +76,13 @@ async function deleteBill(){
     }
 }
 
+// Keith Crabb handled logout
 async function logout() {
     localStorage.removeItem('token');
     window.location.href = '/login.html';
 }
 
+// Madiline handled account info
 async function getAccountInfo(){
     const response = await fetch('/getAccountInfo', {
         method: 'GET',
@@ -104,6 +109,7 @@ async function getAccountInfo(){
     }
 }
 
+// Madiline handled edit profile
 async function editProfile() {
     const name = document.getElementById('name').value;
     const specialty = document.getElementById('specialty').value;
@@ -140,6 +146,7 @@ async function editProfile() {
     }
 }
 
+// Keith handled delete account
 async function deleteAccount() {
     const response = await fetch('/deleteAccount', {
         method: 'DELETE',

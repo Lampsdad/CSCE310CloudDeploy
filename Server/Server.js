@@ -1,3 +1,4 @@
+//Keith handled server setup
 const http = require('http');
 const fs = require('fs');
 const path = require('path');
@@ -6,8 +7,8 @@ const { Client } = require('pg');
 const jwt = require('jsonwebtoken');
 
 // server port and hostname
-const port = 10000;
-const hostname = '0.0.0.0';
+const port = 3000;
+const hostname = 'localhost';
 const secretKey = 'AIUdlHDSFIUh)*Q@U$ORFSJNDKJF';
 
 
@@ -24,6 +25,7 @@ client.connect()
     .catch(err => console.error('Connection error', err.stack));
 
 // Function to handle serving static files
+// Keith handled serving static files
 function serveStaticFile(filePath, contentType, res) {
     fs.readFile(filePath, (error, content) => {
         if (error) {
@@ -42,6 +44,7 @@ function serveStaticFile(filePath, contentType, res) {
 }
 
 // Function to parse cookies from the request header
+// Keith handled parsing cookies
 function parseCookies(cookieHeader) {
     const cookies = {};
     if (cookieHeader) {
@@ -57,6 +60,7 @@ const server = http.createServer(async (req, res) => {
     const parsedUrl = url.parse(req.url, true);
     const pathname = parsedUrl.pathname;
 
+    //Keith and Nikhil handled the login and register functionality
     if (req.method === 'POST' && (pathname === '/login' || pathname === '/register')) {
         let body = '';
         req.on('data', chunk => {
@@ -106,6 +110,7 @@ const server = http.createServer(async (req, res) => {
                     try {
                         await client.query('INSERT INTO doctors (name, specialty, loc, phone, email, password) VALUES ($1, $2, $3, $4, $5, $6)', 
                         [name, specialty, loc, phone, email, password]);
+                        //Keith handled the token creation
                         const token = jwt.sign({ email }, secretKey, { expiresIn: '1h' });
                         res.writeHead(200, { 'Content-Type': 'application/json' });
                         res.end(JSON.stringify({ token }));
@@ -118,6 +123,7 @@ const server = http.createServer(async (req, res) => {
                     try {
                         await client.query('INSERT INTO patients (name, phone, email, password) VALUES ($1, $2, $3, $4)', 
                         [name, phone, email, password]);
+                        //Keith handled the token creation
                         const token = jwt.sign({ email }, secretKey, { expiresIn: '1h' });
                         res.writeHead(200, { 'Content-Type': 'application/json' });
                         res.end(JSON.stringify({ token }));
@@ -133,6 +139,7 @@ const server = http.createServer(async (req, res) => {
                     try {
                         const result = await client.query('SELECT * FROM doctors WHERE email = $1 AND password = $2', [email, password]);
                         if (result.rows.length > 0) {
+                            //Keith handled the token creation
                             const token = jwt.sign({ email }, secretKey, { expiresIn: '1h' });
                             res.writeHead(200, { 'Content-Type': 'application/json' });
                             res.end(JSON.stringify({ success: true, token }));
@@ -148,6 +155,7 @@ const server = http.createServer(async (req, res) => {
                     try {
                         const result = await client.query('SELECT * FROM patients WHERE email = $1 AND password = $2', [email, password]);
                         if (result.rows.length > 0) {
+                            //Keith handled the token creation
                             const token = jwt.sign({ email }, secretKey, { expiresIn: '1h' });
                             res.writeHead(200, { 'Content-Type': 'application/json' });
                             res.end(JSON.stringify({ success: true, token }));
@@ -162,7 +170,8 @@ const server = http.createServer(async (req, res) => {
                 }
             }
         });
-    } else if (pathname === '/getDoctors' && req.method === 'POST') {
+    
+    } else if (pathname === '/getDoctors' && req.method === 'POST') { //Nikhil handled searching doctors
         let body = '';
         req.on('data', chunk => {
             body += chunk.toString();
@@ -186,7 +195,7 @@ const server = http.createServer(async (req, res) => {
                 res.end(JSON.stringify({ error: 'Database query failed' }));
             }
         });
-        } else if (pathname === '/leaveReview' && req.method === 'POST') {
+        } else if (pathname === '/leaveReview' && req.method === 'POST') { //Madiline handled leaving reviews
         //print to console that a review is being left
         console.log('A review is being left');
         let body = '';
@@ -206,12 +215,13 @@ const server = http.createServer(async (req, res) => {
                 res.end(JSON.stringify({ success: false, error: 'Failed to leave review' }));
             }
         });
-    } else if (pathname === '/createAppointment' && req.method === 'POST') {
+    } else if (pathname === '/createAppointment' && req.method === 'POST') { //Nikhil handled creating appointments
         //print to console that an appointment is being created
         console.log('An appointment is being created');
         // Retrieve the patientID associated with the email in the token
         const cookies = parseCookies(req.headers.cookie);
         const token = cookies.token;
+        //keith handled verifying the token
         jwt.verify(token, secretKey, async (err, decoded) => {
             if (err) {
                 res.writeHead(401, { 'Content-Type': 'application/json' });
@@ -243,12 +253,13 @@ const server = http.createServer(async (req, res) => {
                 }
             }
         });
-    } else if (pathname == '/createBill' && req.method === 'POST'){
+    } else if (pathname == '/createBill' && req.method === 'POST'){ //Dylan handled creating bills
         // print to the console that a bill is being created
         console.log('A bill is being created');
         // Retrieve the patientID associated with the email in the token
         const cookies = parseCookies(req.headers.cookie);
         const token = cookies.token;
+        //keith handled verifying the token
         jwt.verify(token, secretKey, async (err, decoded) => {
             if (err) {
                 res.writeHead(401, { 'Content-Type': 'application/json' });
@@ -273,7 +284,7 @@ const server = http.createServer(async (req, res) => {
                 });
             }
         });
-    } else if (pathname === '/deleteBill' && req.method === 'DELETE') {
+    } else if (pathname === '/deleteBill' && req.method === 'DELETE') { //Dylan handled deleting bills
         //print to console that the bill is being deleted
         console.log('Bill is being deleted');
         let body = '';
@@ -292,12 +303,13 @@ const server = http.createServer(async (req, res) => {
                 res.end(JSON.stringify({ success: false, error: 'Failed to delete bill' }));
             }
         });
-    } else if (pathname === '/viewBills' && req.method === 'GET') {
+    } else if (pathname === '/viewBills' && req.method === 'GET') { //Dylan handled viewing bills
         //print to console that the bills are being retrieved
         console.log('Bills are being retrieved');
         // Retrieve the patientID associated with the email in the token
         const cookies = parseCookies(req.headers.cookie);
         const token = cookies.token;
+        //keith handled verifying the token
         jwt.verify(token, secretKey, async (err, decoded) => {
             if (err) {
                 res.writeHead(401, { 'Content-Type': 'application/json' });
@@ -314,7 +326,7 @@ const server = http.createServer(async (req, res) => {
                 }
             }
         });
-    } else if (pathname === '/getDoctorReviews' && req.method === 'POST') {
+    } else if (pathname === '/getDoctorReviews' && req.method === 'POST') { //Madiline handled getting doctor reviews
         // print to console that the reviews are being retrieved
         console.log('Reviews are being retrieved');
         let body = '';
@@ -336,12 +348,13 @@ const server = http.createServer(async (req, res) => {
             }
         }
         );
-    } else if (pathname === '/editProfile' && req.method === 'GET') {
+    } else if (pathname === '/editProfile' && req.method === 'GET') { //Madiline handled editing profiles
         //print to console that the profile is being edited
         console.log('Profile is being edited');
         // Retrieve the patientID associated with the email in the token
         const cookies = parseCookies(req.headers.cookie);
         const token = cookies.token;
+        //keith handled verifying the token
         jwt.verify(token, secretKey, async (err, decoded) => {
             if (err) {
                 res.writeHead(401, { 'Content-Type': 'application/json' });
@@ -358,12 +371,13 @@ const server = http.createServer(async (req, res) => {
                 }
             }
         });
-    } else if (pathname === '/viewAppointments' && req.method === 'GET') {
+    } else if (pathname === '/viewAppointments' && req.method === 'GET') { //Nikhil handled viewing appointments
         // print to console that the appointments are being retrieved
         console.log('Appointments are being retrieved');
         // Retrieve the patientID associated with the email in the token
         const cookies = parseCookies(req.headers.cookie);
         const token = cookies.token;
+        //keith handled verifying the token
         jwt.verify(token, secretKey, async (err, decoded) => {
             if (err) {
                 res.writeHead(401, { 'Content-Type': 'application/json' });
@@ -391,12 +405,13 @@ const server = http.createServer(async (req, res) => {
                 }
             }
         });
-    } else if (pathname === '/getAccountInfo' && req.method === 'GET') {
+    } else if (pathname === '/getAccountInfo' && req.method === 'GET') { //Madiline handled getting account info
         // print to console that the account info is being retrieved
         console.log('Account info is being retrieved');
         // Retrieve the patientID associated with the email in the token
         const cookies = parseCookies(req.headers.cookie);
         const token = cookies.token;
+        //keith handled verifying the token
         jwt.verify(token, secretKey, async (err, decoded) => {
             if (err) {
                 res.writeHead(401, { 'Content-Type': 'application/json' });
@@ -424,12 +439,13 @@ const server = http.createServer(async (req, res) => {
                 }
             }
         });
-    } else if (pathname === '/editProfile' && req.method === 'POST') {
+    } else if (pathname === '/editProfile' && req.method === 'POST') { //Madiline handled editing profiles
         //print to console that the profile is being edited
         console.log('Profile is being edited');
         // Retrieve the patientID associated with the email in the token
         const cookies = parseCookies(req.headers.cookie);
         const token = cookies.token;
+        //keith handled verifying the token
         jwt.verify(token, secretKey, async (err, decoded) => {
             if (err) {
                 res.writeHead(401, { 'Content-Type': 'application/json' });
@@ -471,7 +487,7 @@ const server = http.createServer(async (req, res) => {
                 });
             }
         });
-    } else if (pathname === '/deleteAccount' && req.method === 'DELETE') {
+    } else if (pathname === '/deleteAccount' && req.method === 'DELETE') { //Keith handled deleting accounts
         //print to console that the account is being deleted
         console.log('Account is being deleted');
         // Retrieve the patientID associated with the email in the token
@@ -504,20 +520,21 @@ const server = http.createServer(async (req, res) => {
                 }
             }
         });
-    } else if (pathname === '/') {
+    } else if (pathname === '/') { //Keith handled serving the main page
         //print to console that the main page is being served
         console.log('Default Reference Page is being served');
         serveStaticFile(path.join(__dirname, 'Client', 'login.html'), 'text/html', res);
-    } else if (pathname === '/login.html') {
+    } else if (pathname === '/login.html') { //Keith handled serving the login page
         //print to console that the login page is being served
         console.log('Login page is being served');
         serveStaticFile(path.join(__dirname, 'Client', 'login.html'), 'text/html', res);
-    } else if (pathname === '/PatientDashboard.html') {
+    } else if (pathname === '/PatientDashboard.html') { //Keith handled serving the patient dashboard page
         //print to console that the dashboard page is being served
         // Extract the token from cookies
         const cookies = parseCookies(req.headers.cookie);
         const token = cookies.token;
         console.log('Token:', token);
+        //Keith handled verifying the token
         jwt.verify(token, secretKey, (err, decoded) => {
             // If the token is invalid, return an error
             if (err) {
@@ -532,7 +549,7 @@ const server = http.createServer(async (req, res) => {
                 serveStaticFile(path.join(__dirname, 'Client', 'PatientDashboard.html'), 'text/html', res);
             }
         });
-    } else if (pathname === '/DoctorDashboard.html') {
+    } else if (pathname === '/DoctorDashboard.html') { //Keith handled serving the doctor dashboard page
         //print to console that the dashboard page is being serv
         // Extract the token from cookies
         const cookies = parseCookies(req.headers.cookie);
@@ -557,6 +574,7 @@ const server = http.createServer(async (req, res) => {
     } 
 });
 
+// Keith handled baisc server setup
 function getContentType(filePath) {
     const extname = String(path.extname(filePath)).toLowerCase();
     const mimeTypes = {

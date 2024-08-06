@@ -1,3 +1,4 @@
+// Nikhil handled Searching Doctors
 async function searchDoctors() {
     const specialty = document.getElementById('specialty').value;
     const location = document.getElementById('location').value;
@@ -19,7 +20,7 @@ async function searchDoctors() {
     if (data.length > 0) {
         data.forEach(doctor => {
             const div = document.createElement('div');
-            div.innerHTML = `<p>${doctor.doctorid} - ${doctor.name} - ${doctor.specialty} - ${doctor.loc} - ${doctor.phone}</p>`;
+            div.innerHTML = `<p>${doctor.doctorid} - {doctor.name} - ${doctor.specialty} - ${doctor.loc} - ${doctor.phone}</p>`;
             searchResults.appendChild(div);
         });
     } else {
@@ -27,6 +28,7 @@ async function searchDoctors() {
     }
 }
 
+// Madiline handled leave reviewes
 async function leaveReview() {
     const doctorId = document.getElementById('ReviewdoctorId').value;
     const rating = document.getElementById('Reviewrating').value;
@@ -50,6 +52,7 @@ async function leaveReview() {
     }
 };
 
+// Keith handled getDoctorReviews
 async function getDoctorReviews() {
     const doctorId = document.getElementById('doctorId').value;
     const data2 = {doctorId};
@@ -79,7 +82,7 @@ async function getDoctorReviews() {
     }
 }
 
-
+// Nikhil handled createAppointment
 async function createAppointment() {
     const doctorId = document.getElementById('appointmentDoctorId').value;
     const appointmentDate = document.getElementById('appointmentDate').value;
@@ -103,7 +106,7 @@ async function createAppointment() {
     }
 };
 
-
+// Dylan Hoang handled bills
 async function viewBills() {
     const response = await fetch('/viewBills', {
         method: 'GET',
@@ -129,6 +132,7 @@ async function viewBills() {
     }
 }
 
+// Nikhil handled viewAppointments
 async function viewAppointments() {
     const response = await fetch('/viewAppointments', {
         method: 'GET',
@@ -155,11 +159,13 @@ async function viewAppointments() {
     }
 }
 
+// Keith handled logout
 async function logout() {
     localStorage.removeItem('token');
     window.location.href = '/login.html';
 }
 
+// Madiline handled getAccountInfo
 async function getAccountInfo(){
     const response = await fetch('/getAccountInfo', {
         method: 'GET',
@@ -186,6 +192,7 @@ async function getAccountInfo(){
     }
 }
 
+// Madiline handled edit profile
 async function editProfile() {
     const name = document.getElementById('name').value;
     const phone = document.getElementById('phone').value;
@@ -220,6 +227,7 @@ async function editProfile() {
     }
 }
 
+// Keith handled deleteAccount
 async function deleteAccount() {
     const response = await fetch('/deleteAccount', {
         method: 'DELETE',
