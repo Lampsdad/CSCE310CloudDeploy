@@ -19,7 +19,7 @@ async function searchDoctors() {
     if (data.length > 0) {
         data.forEach(doctor => {
             const div = document.createElement('div');
-            div.innerHTML = `<p>${doctor.doctorid} - {doctor.name} - ${doctor.specialty} - ${doctor.loc} - ${doctor.phone}</p>`;
+            div.innerHTML = `<p>${doctor.doctorid} - ${doctor.name} - ${doctor.specialty} - ${doctor.loc} - ${doctor.phone}</p>`;
             searchResults.appendChild(div);
         });
     } else {
