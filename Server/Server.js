@@ -6,8 +6,8 @@ const { Client } = require('pg');
 const jwt = require('jsonwebtoken');
 
 // server port and hostname
-const port = 3000;
-const hostname = 'localhost';
+const port = 8080;
+const hostname = '0.0.0.0';
 const secretKey = 'AIUdlHDSFIUh)*Q@U$ORFSJNDKJF';
 
 
