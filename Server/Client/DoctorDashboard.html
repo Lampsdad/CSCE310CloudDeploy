@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="DoctorDashboard.js"></script>
+</head>
+<body>
+    <h1>Doctor Dashboard</h1>
+
+    <!-- View Appointments -->  
+    <section>
+        <h2>View Appointments</h2>
+        <button onclick="viewAppointments()">View My Appointments</button>
+        <div id="appointmentResults"></div>
+    </section>
+
+    <!-- Create Bill -->
+    <section>
+        <h2>Create Bill</h2>
+        <label for="patientId">Patient ID:</label>
+        <input type="number" id="patientId" name="patientId" required><br>
+        <label for="amount">Amount:</label>
+        <input type="number" id="billAmount" name="amount" required><br>
+        <button onclick="createBill()">Create Bill</button>
+    </section>
+
+    <!-- Delete Bill -->
+    <section>
+        <h2>Delete Bill</h2>
+        <label for="billId">Bill ID:</label>
+        <input type="number" id="billId" name="billId" required><br>
+        <button onclick="deleteBill()">Delete Bill</button>
+    </section>
+
+    <!-- View Profile Information-->
+    <section>
+        <h2>View Profile Information</h2>
+        <button onclick="getAccountInfo()">View My Profile</button>
+        <div id="accountInfo"></div>
+    </section>
+
+    <!-- Edit Account Information -->
+    <section>
+        <h2>Edit Account Information</h2>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required><br>
+        <label for="specialty">Specialty:</label>
+        <input type="text" id="specialty" name="specialty" required><br>
+        <label for="location">Location:</label>
+        <input type="text" id="location" name="location" required><br>
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone" required><br>
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required><br>
+        <label for="password">Password:</label>
+        <input type="password" id="password" name="password" required><br>
+        <button onclick="editProfile()">Edit Account</button>
+    </section>
+
+    <!-- Logout -->
+    <section>
+        <button onclick="logout()">Logout</button>
+    </section>
+
+    <!-- Delete Account -->
+    <section>
+        <button onclick="deleteAccount()">Delete Account</button>
+    </section>
+
+</body>
+</html>

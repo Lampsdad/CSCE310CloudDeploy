@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login/Register</title>
+    <link rel="stylesheet" href="login.css">
+    <script>
+        function showForm() {
+            const userType = document.querySelector('input[name="userType"]:checked').value;
+            const actionType = document.querySelector('input[name="actionType"]:checked').value;
+            const doctorFields = document.getElementById('doctorFields');
+            const patientFields = document.getElementById('patientFields');
+            const commonFields = document.getElementById('commonFields');
+            const registerFields = document.getElementById('registerFields');
+            const message = document.getElementById('message');
+
+            commonFields.style.display = 'block';
+            message.innerHTML = '';
+
+            if (actionType === 'register') {
+                registerFields.style.display = 'block';
+                if (userType === 'doctor') {
+                    doctorFields.style.display = 'block';
+                    patientFields.style.display = 'none';
+                } else {
+                    doctorFields.style.display = 'none';
+                    patientFields.style.display = 'block';
+                }
+            } else {
+                registerFields.style.display = 'none';
+                doctorFields.style.display = 'none';
+                patientFields.style.display = 'none';
+            }
+        }
+
+        function sendRequest(endpoint) {
+            const userType = document.querySelector('input[name="userType"]:checked').value;
+            const actionType = document.querySelector('input[name="actionType"]:checked').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const message = document.getElementById('message');
+
+            if (!email || !password) {
+                message.innerHTML = 'Please fill in all fields.';
+                return;
+            }
+
+            const data = { userType, email, password };
+
+            if (endpoint === 'register') {
+                if (userType === 'doctor') {
+                    const name = document.getElementById('docName').value;
+                    const specialty = document.getElementById('specialty').value;
+                    const loc = document.getElementById('loc').value;
+                    const phone = document.getElementById('docPhone').value;
+
+                    if (!name || !specialty || !loc || !phone) {
+                        message.innerHTML = 'Please fill in all fields.';
+                        return;
+                    }
+
+                    data.name = name;
+                    data.specialty = specialty;
+                    data.loc = loc;
+                    data.phone = phone;
+                } else {
+                    const name = document.getElementById('patName').value;
+                    const phone = document.getElementById('patPhone').value;
+
+                    if (!name || !phone) {
+                        message.innerHTML = 'Please fill in all fields.';
+                        return;
+                    }
+
+                    data.name = name;
+                    data.phone = phone;
+                }
+            }
+
+            fetch(`/${endpoint}`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    document.cookie = `token=${data.token}; path=/;`;
+                    if (userType === 'doctor') {
+                        window.location.href = '/DoctorDashboard.html';
+                    } else {
+                        window.location.href = '/PatientDashboard.html';
+                    }
+                } else {
+                    message.innerHTML = data.message || 'User Not Registered.';
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                message.innerHTML = 'User Not Registered.';
+            });
+        }
+    </script>
+</head>
+<body>
+    <div class="container">
+        <h1>Login/Register</h1>
+        <p> Are you a: </p>
+        <div class="radio-group">
+            <input type="radio" id="doctor" name="userType" value="doctor" onclick="showForm()">
+            <label for="doctor">Doctor</label>
+
+            <input type="radio" id="patient" name="userType" value="patient" onclick="showForm()">
+            <label for="patient">Patient</label>
+        </div>
+        <div class="radio-group">
+            <p> Would you like to: </p>
+            <input type="radio" id="login" name="actionType" value="login" onclick="showForm()">
+            <label for="login">Login</label>
+
+            <input type="radio" id="register" name="actionType" value="register" onclick="showForm()">
+            <label for="register">Register</label>
+        </div>
+        <div id="commonFields" class="hidden">
+            <p> Please input your information: </p>
+            <input type="email" id="email" placeholder="Email" required />
+            <input type="password" id="password" placeholder="Password" required />
+        </div>
+        <div id="registerFields" class="hidden">
+            <div id="doctorFields" class="hidden">
+                <input type="text" id="docName" placeholder="Name" required />
+                <input type="text" id="specialty" placeholder="Specialty" required />
+                <input type="text" id="loc" placeholder="Location" required />
+                <input type="tel" id="docPhone" placeholder="Phone" required />
+            </div>
+            <div id="patientFields" class="hidden">
+                <input type="text" id="patName" placeholder="Name" required />
+                <input type="tel" id="patPhone" placeholder="Phone" required />
+            </div>
+        </div>
+        <p> Submit Form: </p>
+        <button onclick="sendRequest('login')">Login</button>
+        <button onclick="sendRequest('register')">Register</button>
+        <div id="message"></div>
+    </div>
+</body>
+</html>
